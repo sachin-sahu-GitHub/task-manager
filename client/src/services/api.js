@@ -1,5 +1,8 @@
+
 const TOKEN_KEY = 'notesAppToken';
 const USER_KEY = 'notesAppUser';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 export function saveSession(token, user) {
   localStorage.setItem(TOKEN_KEY, token);
@@ -23,21 +26,52 @@ async function request(path, options = {}) {
   // Protected API calls include the JWT, which the backend middleware verifies.
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const response = await fetch(path, { ...options, headers });
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers
+  });
+
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.message || 'Something went wrong');
+
+  if (!response.ok) {
+    throw new Error(data.message || 'Something went wrong');
+  }
+
   return data;
 }
 
 export const authApi = {
-  register: (formData) => request('/api/auth/register', { method: 'POST', body: JSON.stringify(formData) }),
-  login: (formData) => request('/api/auth/login', { method: 'POST', body: JSON.stringify(formData) })
+  register: (formData) =>
+    request('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    }),
+
+  login: (formData) =>
+    request('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(formData)
+    })
 };
 
 export const notesApi = {
   getAll: () => request('/api/notes'),
-  create: (note) => request('/api/notes', { method: 'POST', body: JSON.stringify(note) }),
-  update: (id, note) => request(`/api/notes/${id}`, { method: 'PUT', body: JSON.stringify(note) }),
-  remove: (id) => request(`/api/notes/${id}`, { method: 'DELETE' })
+
+  create: (note) =>
+    request('/api/notes', {
+      method: 'POST',
+      body: JSON.stringify(note)
+    }),
+
+  update: (id, note) =>
+    request(`/api/notes/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(note)
+    }),
+
+  remove: (id) =>
+    request(`/api/notes/${id}`, {
+      method: 'DELETE'
+    })
 };
 
