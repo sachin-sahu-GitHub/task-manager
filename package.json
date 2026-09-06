@@ -1,10 +1,15 @@
 {
   "name": "beginner-mern-notes-app",
   "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "install-all": "npm --prefix server install && npm --prefix client install",
     "server": "npm --prefix server run dev",
-    "client": "npm --prefix client run dev"
+    "client": "npm --prefix client run dev",
+    "build": "npm --prefix client install && npm --prefix client run build"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
